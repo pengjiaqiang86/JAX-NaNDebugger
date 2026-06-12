@@ -195,6 +195,12 @@ class NanSite:
             entered via a constant).
         call_stack: User call chain to this equation, outermost first;
             may be empty when JAX recorded no source info.
+        phase: Which pass the equation belongs to — ``"forward"`` or
+            ``"backward"`` when set by :func:`find_grad_nan_source`, None
+            for plain forward scans (where it would be redundant). Note
+            that backward-pass equations carry the source location of the
+            *forward* line that generated them, so a backward site's call
+            stack points at e.g. the ``jnp.sqrt`` whose gradient NaN'd.
     """
 
     primitive: str
@@ -204,6 +210,7 @@ class NanSite:
     output_stats: list[str]
     inputs_had_nan: bool
     call_stack: list[str] = dataclasses.field(default_factory=list)
+    phase: str | None = None
 
     def __str__(self) -> str:
         """Render with color auto-detected from the environment."""
@@ -237,7 +244,10 @@ class NanSite:
             if self.inputs_had_nan
             else "NaNs first produced by"
         )
-        lines = [st.title(f"✘ {kind}: ") + st.prim(self.primitive)]
+        head = st.title(f"✘ {kind}: ") + st.prim(self.primitive)
+        if self.phase:
+            head += st.dim(f"  ({self.phase} pass)")
+        lines = [head]
         if self.call_stack:
             lines.append("│ " + st.dim("call stack (most recent call last):"))
             for i, frame in enumerate(self.call_stack):

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "jax-nan-debugger"
-version = "0.1.0"
+version = "0.2.0"
 description = "Pinpoint the exact operation that produces NaNs in JAX forward (and later, inverse) runs."
 readme = "README.md"
 requires-python = ">=3.10"

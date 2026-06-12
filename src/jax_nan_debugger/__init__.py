@@ -13,8 +13,10 @@ outputs.
 
 Public API
 ----------
-- :func:`find_nan_source` -- one-shot scan of a function call; returns a
+- :func:`find_nan_source` -- one-shot scan of a forward run; returns a
   :class:`NanReport`.
+- :func:`find_grad_nan_source` -- the same scan for the backward (VJP)
+  pass of a scalar loss; the report says which pass the NaN was born in.
 - :func:`nan_trace` -- decorator that runs the function at full speed and
   only re-scans (then raises ``FloatingPointError``) when the output
   actually contains a NaN.
@@ -35,16 +37,21 @@ Quick start
 Package layout
 --------------
 - ``forward.py`` -- public entry points for forward-run debugging.
+- ``inverse.py`` -- public entry point for backward (gradient) debugging.
 - ``interpreter.py`` -- the NaN-checked jaxpr evaluator (the engine).
 - ``report.py`` -- result types and terminal rendering.
 - ``_jax_compat.py`` -- shims over JAX-internal APIs.
-
-Inverse-run (gradient/VJP) debugging is planned as step 2 and will reuse
-the same interpreter and report types.
 """
 
 from .forward import find_nan_source, nan_trace
+from .inverse import find_grad_nan_source
 from .report import NanReport, NanSite
 
-__all__ = ["find_nan_source", "nan_trace", "NanReport", "NanSite"]
-__version__ = "0.1.0"
+__all__ = [
+    "find_nan_source",
+    "find_grad_nan_source",
+    "nan_trace",
+    "NanReport",
+    "NanSite",
+]
+__version__ = "0.2.0"

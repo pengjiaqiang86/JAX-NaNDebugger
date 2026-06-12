@@ -38,6 +38,7 @@ print(report)
 # │   [0] float32[2] range=[-1, 1] nans=0 infs=0
 # ╰ outputs:
 #     [0] float32[2] range=[0, 0] nans=1 infs=0
+```
 
 The call stack is the full chain of *your* functions leading to the
 offending primitive (JAX internals are filtered out), so when the same
@@ -47,7 +48,53 @@ primitive, and any non-zero `nans=`/`infs=` counts are highlighted.
 Color is disabled automatically when output is piped, or explicitly via
 the `NO_COLOR` env var (`FORCE_COLOR` forces it on); `report.render(color=...)`
 gives explicit control.
+
+### Gradient (backward-pass) NaNs
+
+```python
+from jax_nan_debugger import find_grad_nan_source
+
+def loss(x):
+    return jnp.sum(jnp.where(x > 0, jnp.log(x), 0.0))  # forward: fine
+                                                       # grad: NaN at x=0
+
+report = find_grad_nan_source(loss, jnp.array([0.0, 1.0]))
+print(report)
+# ✘ NaNs first produced by: div  (backward pass)
+# │   ▶ your_script.py:4 in loss
+# ...
 ```
+
+The forward pass is scanned first (a forward NaN would contaminate every
+gradient); if it is clean, the VJP computation is scanned and the origin
+is tagged ``(backward pass)``. Backward equations are attributed to the
+*forward* line that generated them — i.e. the line you need to fix.
+Non-scalar outputs are supported via ``cotangents=...``; gradients are
+taken with respect to all positional arguments (arbitrary pytrees).
+
+### Works with any transform
+
+`find_nan_source` only needs a JAX-traceable callable, and `jax.make_jaxpr`
+traces through arbitrary transform compositions — so wrapping the
+*transformed* function is fully supported:
+
+```python
+find_nan_source(jax.grad(f), x)                  # reverse-mode
+find_nan_source(lambda x, t: jax.jvp(f, (x,), (t,))[1], x, t)   # forward-mode
+_, pullback = jax.vjp(f, x);   find_nan_source(pullback, ct)
+_, f_lin    = jax.linearize(f, x);   find_nan_source(f_lin, t)
+find_nan_source(jax.linear_transpose(g, x), ct)
+find_nan_source(jax.grad(jax.grad(f)), x)        # higher-order too
+nan_trace(jax.grad(f))                           # the decorator composes the same way
+```
+
+Compared to this generic pattern, `find_grad_nan_source` adds two things:
+the forward/backward `phase` tag in the report, and a whole-pipeline scan.
+The latter matters for pre-computed `vjp`/`linearize` pullbacks: their
+residuals were evaluated *before* the scan, so a NaN born in the forward
+pass enters the pullback as an opaque constant and only the weaker
+"propagated" report is possible. When in doubt, hand the *primal* function
+to `find_grad_nan_source`.
 
 ### Decorator (zero-cost until a NaN appears)
 
@@ -81,6 +128,9 @@ Each script in [examples/](examples/) is a self-contained NaN scenario:
 | `06_nan_trace_in_data_loop.py` | `@nan_trace` guarding a loop over batches at full speed |
 | `07_nan_already_in_inputs.py` | NaN already present in the data, reported as such |
 | `08_call_stack_of_nan_origin.py` | NaN deep in nested helpers — the report shows the full call chain (`transformer_block` → `attention` → `softmax_weights`) |
+| `09_grad_sqrt_at_zero.py` | Backward trap: `sqrt'` is inf where the value is 0, and `inf * 0 = NaN` in the chain rule; `jax.nn.relu`'s custom JVP shown as the safe variant |
+| `10_grad_where_log_trap.py` | The infamous `where` gradient trap — the forward pass masks `log(0)`, the backward pass still differentiates the dead branch; inner-`where` fix shown |
+| `11_grad_feedforward_network.py` | Feed-forward NN with RMSE loss: a perfectly-fit batch gives a finite loss but all-NaN gradients (`0/0` in sqrt's VJP) |
 
 Run them from the repo root after `pip install -e .`:
 
@@ -101,4 +151,4 @@ python examples/05_nan_hidden_inside_jit.py
 ## Roadmap
 
 - [x] Step 1: forward-run NaN source location
-- [ ] Step 2: inverse (gradient/VJP) NaN source location
+- [x] Step 2: inverse (gradient/VJP) NaN source location
