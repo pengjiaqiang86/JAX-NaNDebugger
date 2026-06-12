@@ -1,0 +1,2848 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Pinpoint the exact operation that first produces a NaN in a JAX computation">
+      
+      
+      
+        <link rel="canonical" href="https://pengjiaqiang86.github.io/JAX-NaNDebugger/api/">
+      
+      
+        <link rel="prev" href="../examples/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>API reference - jax-nan-debugger</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="jax-nan-debugger" class="md-header__button md-logo" aria-label="jax-nan-debugger" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            jax-nan-debugger
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/pengjiaqiang86/JAX-NaNDebugger" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JAX-NaNDebugger
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="jax-nan-debugger" class="md-nav__button md-logo" aria-label="jax-nan-debugger" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    jax-nan-debugger
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/pengjiaqiang86/JAX-NaNDebugger" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    JAX-NaNDebugger
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/forward/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debugging forward runs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/gradients/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Debugging gradients
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reading the report
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../guide/transforms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wrapping any transform
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scanning-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scanning functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jax_nan_debugger.find_nan_source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        find_nan_source
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jax_nan_debugger.find_grad_nan_source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        find_grad_nan_source
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jax_nan_debugger.nan_trace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nan_trace
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#result-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Result types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanReport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NanReport
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NanReport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanReport.found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        found
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanReport.__str__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __str__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanReport.render" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        render
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanSite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NanSite
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NanSite">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanSite.__str__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __str__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanSite.render" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        render
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scanning-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scanning functions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jax_nan_debugger.find_nan_source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        find_nan_source
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jax_nan_debugger.find_grad_nan_source" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        find_grad_nan_source
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jax_nan_debugger.nan_trace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        nan_trace
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#result-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Result types
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanReport" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NanReport
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NanReport">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanReport.found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        found
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanReport.__str__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __str__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanReport.render" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        render
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanSite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        NanSite
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NanSite">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanSite.__str__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __str__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jax_nan_debugger.NanSite.render" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        render
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="api-reference">API reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
+<h2 id="scanning-functions">Scanning functions<a class="headerlink" href="#scanning-functions" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="jax_nan_debugger.find_nan_source" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">jax_nan_debugger.find_nan_source</span>
+
+
+<a href="#jax_nan_debugger.find_nan_source" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">find_nan_source</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents first">
+
+        <p>Locate the operation that first produces a NaN in <code>fn(*args, **kwargs)</code>.</p>
+<p>The function is traced to a jaxpr with <code>jax.make_jaxpr</code> and then
+re-evaluated one primitive at a time, un-jitted, with a NaN check
+after every step. The first equation whose inputs are NaN-free but
+whose output contains NaNs is reported as the origin, together with
+the user call stack and input/output value statistics. <code>jit</code> /
+<code>pjit</code> / <code>custom_jvp</code> / <code>custom_vjp</code> / remat sub-computations
+are recursed into, so the blame lands on the innermost primitive.</p>
+<p>Three outcomes are possible — see :class:<code>NanReport</code>:</p>
+<ul>
+<li>the inputs already contain NaNs (<code>report.nan_in_inputs</code>);</li>
+<li>an origin equation was found (<code>report.first_site</code>);</li>
+<li>the run is clean (<code>report.found</code> is False, <code>report.outputs</code>
+  holds the result).</li>
+</ul>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>fn</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A JAX-traceable callable. It will <em>not</em> be executed compiled;
+side effects such as <code>jax.debug.print</code> fire under tracing
+semantics.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>*args</code>
+            </td>
+            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Positional arguments, passed through <code>jax.make_jaxpr</code> —
+arbitrary pytrees of arrays/scalars are fine.</p>
+              </div>
+            </td>
+            <td>
+                  <code>()</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>**kwargs</code>
+            </td>
+            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Keyword arguments; bound via <code>functools.partial</code> before
+tracing, so they may be non-array Python values as well.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>A</code></td>            <td>
+                  <code><a class="autorefs autorefs-internal" title="jax_nan_debugger.NanReport
+
+
+  
+      dataclass
+   (jax_nan_debugger.report.NanReport)" href="#jax_nan_debugger.NanReport">NanReport</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>class:<code>NanReport</code>. Print it for a human-readable, colorized</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td></td>            <td>
+                  <code><a class="autorefs autorefs-internal" title="jax_nan_debugger.NanReport
+
+
+  
+      dataclass
+   (jax_nan_debugger.report.NanReport)" href="#jax_nan_debugger.NanReport">NanReport</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>diagnosis, or inspect <code>report.first_site</code> programmatically.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <blockquote>
+<blockquote>
+<blockquote>
+<p>def f(x):
+...     return jnp.sum(jnp.log(x - 2.0))
+report = find_nan_source(f, jnp.array([1.0, 3.0]))
+report.first_site.primitive
+'log'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</details>
+
+<details class="note" open>
+  <summary>Note</summary>
+  <p>Evaluation is op-by-op Python interpretation — orders of magnitude
+slower than a compiled run. Use :func:<code>nan_trace</code> to pay this cost
+only when a NaN actually occurs. Also note XLA fusion may reorder
+floating-point operations, so in rare cases the compiled run NaNs
+where the un-jitted scan does not (or vice versa).</p>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/jax_nan_debugger/forward.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span>
+<span class="normal">53</span>
+<span class="normal">54</span>
+<span class="normal">55</span>
+<span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">find_nan_source</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NanReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Locate the operation that first produces a NaN in ``fn(*args, **kwargs)``.</span>
+
+<span class="sd">    The function is traced to a jaxpr with ``jax.make_jaxpr`` and then</span>
+<span class="sd">    re-evaluated one primitive at a time, un-jitted, with a NaN check</span>
+<span class="sd">    after every step. The first equation whose inputs are NaN-free but</span>
+<span class="sd">    whose output contains NaNs is reported as the origin, together with</span>
+<span class="sd">    the user call stack and input/output value statistics. ``jit`` /</span>
+<span class="sd">    ``pjit`` / ``custom_jvp`` / ``custom_vjp`` / remat sub-computations</span>
+<span class="sd">    are recursed into, so the blame lands on the innermost primitive.</span>
+
+<span class="sd">    Three outcomes are possible — see :class:`NanReport`:</span>
+
+<span class="sd">    - the inputs already contain NaNs (``report.nan_in_inputs``);</span>
+<span class="sd">    - an origin equation was found (``report.first_site``);</span>
+<span class="sd">    - the run is clean (``report.found`` is False, ``report.outputs``</span>
+<span class="sd">      holds the result).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn: A JAX-traceable callable. It will *not* be executed compiled;</span>
+<span class="sd">            side effects such as ``jax.debug.print`` fire under tracing</span>
+<span class="sd">            semantics.</span>
+<span class="sd">        *args: Positional arguments, passed through ``jax.make_jaxpr`` —</span>
+<span class="sd">            arbitrary pytrees of arrays/scalars are fine.</span>
+<span class="sd">        **kwargs: Keyword arguments; bound via ``functools.partial`` before</span>
+<span class="sd">            tracing, so they may be non-array Python values as well.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A :class:`NanReport`. Print it for a human-readable, colorized</span>
+<span class="sd">        diagnosis, or inspect ``report.first_site`` programmatically.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; def f(x):</span>
+<span class="sd">        ...     return jnp.sum(jnp.log(x - 2.0))</span>
+<span class="sd">        &gt;&gt;&gt; report = find_nan_source(f, jnp.array([1.0, 3.0]))</span>
+<span class="sd">        &gt;&gt;&gt; report.first_site.primitive</span>
+<span class="sd">        &#39;log&#39;</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Evaluation is op-by-op Python interpretation — orders of magnitude</span>
+<span class="sd">        slower than a compiled run. Use :func:`nan_trace` to pay this cost</span>
+<span class="sd">        only when a NaN actually occurs. Also note XLA fusion may reorder</span>
+<span class="sd">        floating-point operations, so in rare cases the compiled run NaNs</span>
+<span class="sd">        where the un-jitted scan does not (or vice versa).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">flat_in</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">flatten</span><span class="p">((</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">has_nan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">flat_in</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">NanReport</span><span class="p">(</span><span class="n">nan_in_inputs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">first_site</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">closed</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">make_jaxpr</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">flat_args</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">leaves</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="n">state</span> <span class="o">=</span> <span class="n">ScanState</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">flat_out</span> <span class="o">=</span> <span class="n">eval_jaxpr_checked</span><span class="p">(</span>
+            <span class="n">closed</span><span class="o">.</span><span class="n">jaxpr</span><span class="p">,</span> <span class="n">closed</span><span class="o">.</span><span class="n">consts</span><span class="p">,</span> <span class="o">*</span><span class="n">flat_args</span><span class="p">,</span> <span class="n">state</span><span class="o">=</span><span class="n">state</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="n">NanFound</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">NanReport</span><span class="p">(</span><span class="n">nan_in_inputs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">first_site</span><span class="o">=</span><span class="n">e</span><span class="o">.</span><span class="n">site</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="n">out_tree</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">structure</span><span class="p">(</span><span class="n">jax</span><span class="o">.</span><span class="n">eval_shape</span><span class="p">(</span><span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="o">*</span><span class="n">args</span><span class="p">))</span>
+    <span class="n">outputs</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">unflatten</span><span class="p">(</span><span class="n">out_tree</span><span class="p">,</span> <span class="n">flat_out</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">has_nan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">flat_out</span><span class="p">):</span>
+        <span class="c1"># No equation produced a NaN from clean inputs, so the NaN entered</span>
+        <span class="c1"># via a constant/literal; blame the first place it was carried.</span>
+        <span class="k">return</span> <span class="n">NanReport</span><span class="p">(</span>
+            <span class="n">nan_in_inputs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">first_site</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">first_propagated</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">NanReport</span><span class="p">(</span><span class="n">nan_in_inputs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">first_site</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outputs</span><span class="o">=</span><span class="n">outputs</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="jax_nan_debugger.find_grad_nan_source" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">jax_nan_debugger.find_grad_nan_source</span>
+
+
+<a href="#jax_nan_debugger.find_grad_nan_source" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">find_grad_nan_source</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">cotangents</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents first">
+
+        <p>Locate the operation that first produces a NaN in <code>grad(fn)</code>.</p>
+<p>The scan runs in two stages:</p>
+<ol>
+<li>The forward pass is scanned with :func:<code>find_nan_source</code>. If it is
+   already contaminated, that origin is returned (tagged
+   <code>phase="forward"</code>) — a backward scan would only re-discover the
+   same NaN after it propagated through the VJP.</li>
+<li>Otherwise the full VJP computation <code>vjp(fn)(cotangents)</code> is
+   traced and scanned equation by equation; the origin is tagged
+   <code>phase="backward"</code>.</li>
+</ol>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>fn</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A JAX-differentiable callable. With the default cotangents it
+must return a single scalar (like a loss); for non-scalar
+outputs pass explicit <code>cotangents</code>.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>*args</code>
+            </td>
+            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Positional arguments (arbitrary pytrees). Gradients are
+taken with respect to <em>all</em> of them, so NaNs in e.g.
+data-gradients are found too.</p>
+              </div>
+            </td>
+            <td>
+                  <code>()</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cotangents</code>
+            </td>
+            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Output cotangent(s) to pull back, matching the output
+structure of <code>fn</code>. Defaults to 1.0 for a scalar output —
+i.e. ordinary <code>jax.grad</code> semantics.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>**kwargs</code>
+            </td>
+            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Keyword arguments; treated as non-differentiated
+constants, mirroring <code>jax.grad</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>{}</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>A</code></td>            <td>
+                  <code><a class="autorefs autorefs-internal" title="jax_nan_debugger.NanReport
+
+
+  
+      dataclass
+   (jax_nan_debugger.report.NanReport)" href="#jax_nan_debugger.NanReport">NanReport</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>class:<code>NanReport</code>. <code>report.first_site.phase</code> tells you which</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td></td>            <td>
+                  <code><a class="autorefs autorefs-internal" title="jax_nan_debugger.NanReport
+
+
+  
+      dataclass
+   (jax_nan_debugger.report.NanReport)" href="#jax_nan_debugger.NanReport">NanReport</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>pass produced the NaN; for clean runs <code>report.outputs</code> holds the</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td></td>            <td>
+                  <code><a class="autorefs autorefs-internal" title="jax_nan_debugger.NanReport
+
+
+  
+      dataclass
+   (jax_nan_debugger.report.NanReport)" href="#jax_nan_debugger.NanReport">NanReport</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>gradients (a tuple, one entry per positional argument).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="ValueError">ValueError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>If <code>fn</code> does not return a single scalar and no
+explicit <code>cotangents</code> were provided.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <blockquote>
+<blockquote>
+<blockquote>
+<p>def loss(x):
+...     return jnp.sum(jnp.sqrt(jax.nn.relu(x)))
+report = find_grad_nan_source(loss, jnp.array([0.0, 4.0]))
+report.first_site.phase
+'backward'</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</details>
+
+<details class="note" open>
+  <summary>Note</summary>
+  <p>Like the forward scan, evaluation is op-by-op and debug-speed
+only. The backward jaxpr includes the forward equations (VJP
+needs the primal intermediates), but stage 1 guarantees they are
+clean, so any site blamed in stage 2 belongs to the gradient
+computation.</p>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/jax_nan_debugger/inverse.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">find_grad_nan_source</span><span class="p">(</span>
+    <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">cotangents</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NanReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Locate the operation that first produces a NaN in ``grad(fn)``.</span>
+
+<span class="sd">    The scan runs in two stages:</span>
+
+<span class="sd">    1. The forward pass is scanned with :func:`find_nan_source`. If it is</span>
+<span class="sd">       already contaminated, that origin is returned (tagged</span>
+<span class="sd">       ``phase=&quot;forward&quot;``) — a backward scan would only re-discover the</span>
+<span class="sd">       same NaN after it propagated through the VJP.</span>
+<span class="sd">    2. Otherwise the full VJP computation ``vjp(fn)(cotangents)`` is</span>
+<span class="sd">       traced and scanned equation by equation; the origin is tagged</span>
+<span class="sd">       ``phase=&quot;backward&quot;``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn: A JAX-differentiable callable. With the default cotangents it</span>
+<span class="sd">            must return a single scalar (like a loss); for non-scalar</span>
+<span class="sd">            outputs pass explicit ``cotangents``.</span>
+<span class="sd">        *args: Positional arguments (arbitrary pytrees). Gradients are</span>
+<span class="sd">            taken with respect to *all* of them, so NaNs in e.g.</span>
+<span class="sd">            data-gradients are found too.</span>
+<span class="sd">        cotangents: Output cotangent(s) to pull back, matching the output</span>
+<span class="sd">            structure of ``fn``. Defaults to 1.0 for a scalar output —</span>
+<span class="sd">            i.e. ordinary ``jax.grad`` semantics.</span>
+<span class="sd">        **kwargs: Keyword arguments; treated as non-differentiated</span>
+<span class="sd">            constants, mirroring ``jax.grad``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A :class:`NanReport`. ``report.first_site.phase`` tells you which</span>
+<span class="sd">        pass produced the NaN; for clean runs ``report.outputs`` holds the</span>
+<span class="sd">        gradients (a tuple, one entry per positional argument).</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: If ``fn`` does not return a single scalar and no</span>
+<span class="sd">            explicit ``cotangents`` were provided.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; def loss(x):</span>
+<span class="sd">        ...     return jnp.sum(jnp.sqrt(jax.nn.relu(x)))</span>
+<span class="sd">        &gt;&gt;&gt; report = find_grad_nan_source(loss, jnp.array([0.0, 4.0]))</span>
+<span class="sd">        &gt;&gt;&gt; report.first_site.phase</span>
+<span class="sd">        &#39;backward&#39;</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Like the forward scan, evaluation is op-by-op and debug-speed</span>
+<span class="sd">        only. The backward jaxpr includes the forward equations (VJP</span>
+<span class="sd">        needs the primal intermediates), but stage 1 guarantees they are</span>
+<span class="sd">        clean, so any site blamed in stage 2 belongs to the gradient</span>
+<span class="sd">        computation.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fn_bound</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">fwd</span> <span class="o">=</span> <span class="n">find_nan_source</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fwd</span><span class="o">.</span><span class="n">found</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">fwd</span><span class="o">.</span><span class="n">first_site</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fwd</span><span class="o">.</span><span class="n">first_site</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="s2">&quot;forward&quot;</span>
+        <span class="k">return</span> <span class="n">fwd</span>
+
+    <span class="k">if</span> <span class="n">cotangents</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">out_shape</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">eval_shape</span><span class="p">(</span><span class="n">fn_bound</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">leaves</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">leaves</span><span class="p">(</span><span class="n">out_shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">leaves</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">leaves</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;fn does not return a single scalar; pass explicit &quot;</span>
+                <span class="s2">&quot;`cotangents` matching its output structure to &quot;</span>
+                <span class="s2">&quot;find_grad_nan_source.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">cotangents</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">((),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">leaves</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">vjp_fn</span><span class="p">(</span><span class="o">*</span><span class="n">inner_args</span><span class="p">):</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">pullback</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">vjp</span><span class="p">(</span><span class="n">fn_bound</span><span class="p">,</span> <span class="o">*</span><span class="n">inner_args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pullback</span><span class="p">(</span><span class="n">cotangents</span><span class="p">)</span>
+
+    <span class="n">report</span> <span class="o">=</span> <span class="n">find_nan_source</span><span class="p">(</span><span class="n">vjp_fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">report</span><span class="o">.</span><span class="n">first_site</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">report</span><span class="o">.</span><span class="n">first_site</span><span class="o">.</span><span class="n">phase</span> <span class="o">=</span> <span class="s2">&quot;backward&quot;</span>
+    <span class="k">return</span> <span class="n">report</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="jax_nan_debugger.nan_trace" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">jax_nan_debugger.nan_trace</span>
+
+
+<a href="#jax_nan_debugger.nan_trace" class="headerlink" title="Permanent link">&para;</a></h2>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">nan_trace</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents first">
+
+        <p>Decorator: run <code>fn</code> at full speed, locating NaN origins on demand.</p>
+<p>The wrapped function executes normally (jitted code stays jitted).
+After each call the outputs are checked for NaNs; on a hit, the call
+is re-run through :func:<code>find_nan_source</code> and a <code>FloatingPointError</code>
+is raised whose message contains the full located report. Clean calls
+pay only one NaN reduction over the outputs.</p>
+<p>This is the right tool for loops over many batches/steps: the slow
+op-by-op scan runs only for the one call that actually fails, and the
+raised error tells you both <em>which call</em> (from your own loop context)
+and <em>which operation</em> (from the report).</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>fn</code>
+            </td>
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A JAX-traceable callable; both its normal execution and the
+diagnostic re-run receive the same arguments.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A wrapped callable with the same signature, name, and docstring</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="typing.Callable">Callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>(via <code>functools.wraps</code>).</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="FloatingPointError">FloatingPointError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>When the output contains a NaN. Raised by the
+<em>wrapper</em> at call time, not by this decorator itself.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="example" open>
+  <summary>Example</summary>
+  <blockquote>
+<blockquote>
+<blockquote>
+<p>@nan_trace
+... def loss(p):
+...     return -jnp.sum(p * jnp.log(p))
+loss(jnp.array([0.5, 0.5]))     # runs at full speed
+loss(jnp.array([1.0, 0.0]))     # raises with the located <code>mul</code></p>
+</blockquote>
+</blockquote>
+</blockquote>
+</details>
+
+<details class="caveat" open>
+  <summary>Caveat</summary>
+  <p>The diagnostic re-run assumes <code>fn</code> is deterministic for the
+given arguments; a function whose NaN depends on external state
+may not reproduce it during the re-scan.</p>
+</details>
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/jax_nan_debugger/forward.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">nan_trace</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator: run ``fn`` at full speed, locating NaN origins on demand.</span>
+
+<span class="sd">    The wrapped function executes normally (jitted code stays jitted).</span>
+<span class="sd">    After each call the outputs are checked for NaNs; on a hit, the call</span>
+<span class="sd">    is re-run through :func:`find_nan_source` and a ``FloatingPointError``</span>
+<span class="sd">    is raised whose message contains the full located report. Clean calls</span>
+<span class="sd">    pay only one NaN reduction over the outputs.</span>
+
+<span class="sd">    This is the right tool for loops over many batches/steps: the slow</span>
+<span class="sd">    op-by-op scan runs only for the one call that actually fails, and the</span>
+<span class="sd">    raised error tells you both *which call* (from your own loop context)</span>
+<span class="sd">    and *which operation* (from the report).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn: A JAX-traceable callable; both its normal execution and the</span>
+<span class="sd">            diagnostic re-run receive the same arguments.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A wrapped callable with the same signature, name, and docstring</span>
+<span class="sd">        (via ``functools.wraps``).</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        FloatingPointError: When the output contains a NaN. Raised by the</span>
+<span class="sd">            *wrapper* at call time, not by this decorator itself.</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; @nan_trace</span>
+<span class="sd">        ... def loss(p):</span>
+<span class="sd">        ...     return -jnp.sum(p * jnp.log(p))</span>
+<span class="sd">        &gt;&gt;&gt; loss(jnp.array([0.5, 0.5]))     # runs at full speed</span>
+<span class="sd">        &gt;&gt;&gt; loss(jnp.array([1.0, 0.0]))     # raises with the located `mul`</span>
+
+<span class="sd">    Caveat:</span>
+<span class="sd">        The diagnostic re-run assumes ``fn`` is deterministic for the</span>
+<span class="sd">        given arguments; a function whose NaN depends on external state</span>
+<span class="sd">        may not reproduce it during the re-scan.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">has_nan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">jax</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">leaves</span><span class="p">(</span><span class="n">out</span><span class="p">)):</span>
+            <span class="n">report</span> <span class="o">=</span> <span class="n">find_nan_source</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">FloatingPointError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;NaN detected in output of </span><span class="si">{</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{</span><span class="n">report</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+    <span class="k">return</span> <span class="n">wrapped</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><h2 id="result-types">Result types<a class="headerlink" href="#result-types" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="jax_nan_debugger.NanReport" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">jax_nan_debugger.NanReport</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#jax_nan_debugger.NanReport" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+
+
+
+        <p>Result of a NaN scan; print it or inspect the fields programmatically.</p>
+<p>Exactly one of three situations is described:</p>
+<ol>
+<li><code>nan_in_inputs</code> is True — the NaN came in with the caller's data;
+   no equation is blamed and <code>first_site</code> is None.</li>
+<li><code>first_site</code> is set — the scan located the equation responsible.</li>
+<li>Neither — the run was clean; <code>outputs</code> holds the function result.</li>
+</ol>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="jax_nan_debugger.NanReport.nan_in_inputs">nan_in_inputs</span></code></td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True when the function inputs already contained
+NaNs before any computation ran.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="jax_nan_debugger.NanReport.first_site">first_site</span></code></td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="jax_nan_debugger.NanSite
+
+
+  
+      dataclass
+   (jax_nan_debugger.report.NanSite)" href="#jax_nan_debugger.NanSite">NanSite</a> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The located :class:<code>NanSite</code>, or None for cases 1
+and 3.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="jax_nan_debugger.NanReport.outputs">outputs</span></code></td>
+            <td>
+                  <code><span title="typing.Any">Any</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The function's outputs (with original pytree structure)
+when the scan completed, i.e. when no origin equation aborted
+it; None when the scan stopped at <code>first_site</code>.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/jax_nan_debugger/report.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span>
+<span class="normal">290</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
+<span class="normal">298</span>
+<span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NanReport</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Result of a NaN scan; print it or inspect the fields programmatically.</span>
+
+<span class="sd">    Exactly one of three situations is described:</span>
+
+<span class="sd">    1. ``nan_in_inputs`` is True — the NaN came in with the caller&#39;s data;</span>
+<span class="sd">       no equation is blamed and ``first_site`` is None.</span>
+<span class="sd">    2. ``first_site`` is set — the scan located the equation responsible.</span>
+<span class="sd">    3. Neither — the run was clean; ``outputs`` holds the function result.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        nan_in_inputs: True when the function inputs already contained</span>
+<span class="sd">            NaNs before any computation ran.</span>
+<span class="sd">        first_site: The located :class:`NanSite`, or None for cases 1</span>
+<span class="sd">            and 3.</span>
+<span class="sd">        outputs: The function&#39;s outputs (with original pytree structure)</span>
+<span class="sd">            when the scan completed, i.e. when no origin equation aborted</span>
+<span class="sd">            it; None when the scan stopped at ``first_site``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">nan_in_inputs</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">first_site</span><span class="p">:</span> <span class="n">NanSite</span> <span class="o">|</span> <span class="kc">None</span>
+    <span class="n">outputs</span><span class="p">:</span> <span class="n">Any</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">found</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;True if the scan detected NaNs anywhere (inputs or equations).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nan_in_inputs</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_site</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render with color auto-detected from the environment.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the report for the terminal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            color: True forces ANSI colors, False forces plain text, None</span>
+<span class="sd">                (default) auto-detects via :func:`_color_enabled`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The rendered :class:`NanSite` block, or a one-line message for</span>
+<span class="sd">            the NaN-in-inputs and all-clean cases.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">_Style</span><span class="p">(</span><span class="n">_color_enabled</span><span class="p">()</span> <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">color</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nan_in_inputs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;✘ NaNs are already present in the function inputs.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_site</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">good</span><span class="p">(</span><span class="s2">&quot;✔ No NaNs found in any intermediate or output value.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_site</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="jax_nan_debugger.NanReport.found" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">found</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#jax_nan_debugger.NanReport.found" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="n">found</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>True if the scan detected NaNs anywhere (inputs or equations).</p>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="jax_nan_debugger.NanReport.__str__" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">__str__</span>
+
+
+<a href="#jax_nan_debugger.NanReport.__str__" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">__str__</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Render with color auto-detected from the environment.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/jax_nan_debugger/report.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">299</span>
+<span class="normal">300</span>
+<span class="normal">301</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render with color auto-detected from the environment.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="jax_nan_debugger.NanReport.render" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">render</span>
+
+
+<a href="#jax_nan_debugger.NanReport.render" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">render</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Render the report for the terminal.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>color</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True forces ANSI colors, False forces plain text, None
+(default) auto-detects via :func:<code>_color_enabled</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The rendered :class:<code>NanSite</code> block, or a one-line message for</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>the NaN-in-inputs and all-clean cases.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/jax_nan_debugger/report.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">303</span>
+<span class="normal">304</span>
+<span class="normal">305</span>
+<span class="normal">306</span>
+<span class="normal">307</span>
+<span class="normal">308</span>
+<span class="normal">309</span>
+<span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render the report for the terminal.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        color: True forces ANSI colors, False forces plain text, None</span>
+<span class="sd">            (default) auto-detects via :func:`_color_enabled`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The rendered :class:`NanSite` block, or a one-line message for</span>
+<span class="sd">        the NaN-in-inputs and all-clean cases.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">_Style</span><span class="p">(</span><span class="n">_color_enabled</span><span class="p">()</span> <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">color</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nan_in_inputs</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;✘ NaNs are already present in the function inputs.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_site</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">st</span><span class="o">.</span><span class="n">good</span><span class="p">(</span><span class="s2">&quot;✔ No NaNs found in any intermediate or output value.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_site</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="jax_nan_debugger.NanSite" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">jax_nan_debugger.NanSite</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#jax_nan_debugger.NanSite" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+
+
+
+        <p>One jaxpr equation at which NaNs appeared, with its context.</p>
+
+
+<p><span class="doc-section-title">Attributes:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td><code><span title="jax_nan_debugger.NanSite.primitive">primitive</span></code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Name of the JAX primitive (e.g. <code>"div"</code>, <code>"log"</code>).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="jax_nan_debugger.NanSite.source">source</span></code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Innermost user source location as <code>"file:line in func"</code>.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="jax_nan_debugger.NanSite.eqn_repr">eqn_repr</span></code></td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The jaxpr equation as a string, e.g.
+<code>"a:f32[4,4] = div b c"</code>.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="jax_nan_debugger.NanSite.input_stats">input_stats</span></code></td>
+            <td>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>One :func:<code>value_stats</code> line per equation input, in
+positional order.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="jax_nan_debugger.NanSite.output_stats">output_stats</span></code></td>
+            <td>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>One :func:<code>value_stats</code> line per equation output.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="jax_nan_debugger.NanSite.inputs_had_nan">inputs_had_nan</span></code></td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>False means this equation <em>produced</em> the NaN from
+NaN-free inputs (the true origin). True means the NaN was
+already present in an input and merely flowed through — only
+reported when no producing equation exists (e.g. a NaN that
+entered via a constant).</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="jax_nan_debugger.NanSite.call_stack">call_stack</span></code></td>
+            <td>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>User call chain to this equation, outermost first;
+may be empty when JAX recorded no source info.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="jax_nan_debugger.NanSite.phase">phase</span></code></td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Which pass the equation belongs to — <code>"forward"</code> or
+<code>"backward"</code> when set by :func:<code>find_grad_nan_source</code>, None
+for plain forward scans (where it would be redundant). Note
+that backward-pass equations carry the source location of the
+<em>forward</em> line that generated them, so a backward site's call
+stack points at e.g. the <code>jnp.sqrt</code> whose gradient NaN'd.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+
+
+
+
+
+
+              <details class="mkdocstrings-source">
+                <summary>Source code in <code>src/jax_nan_debugger/report.py</code></summary>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">NanSite</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;One jaxpr equation at which NaNs appeared, with its context.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        primitive: Name of the JAX primitive (e.g. ``&quot;div&quot;``, ``&quot;log&quot;``).</span>
+<span class="sd">        source: Innermost user source location as ``&quot;file:line in func&quot;``.</span>
+<span class="sd">        eqn_repr: The jaxpr equation as a string, e.g.</span>
+<span class="sd">            ``&quot;a:f32[4,4] = div b c&quot;``.</span>
+<span class="sd">        input_stats: One :func:`value_stats` line per equation input, in</span>
+<span class="sd">            positional order.</span>
+<span class="sd">        output_stats: One :func:`value_stats` line per equation output.</span>
+<span class="sd">        inputs_had_nan: False means this equation *produced* the NaN from</span>
+<span class="sd">            NaN-free inputs (the true origin). True means the NaN was</span>
+<span class="sd">            already present in an input and merely flowed through — only</span>
+<span class="sd">            reported when no producing equation exists (e.g. a NaN that</span>
+<span class="sd">            entered via a constant).</span>
+<span class="sd">        call_stack: User call chain to this equation, outermost first;</span>
+<span class="sd">            may be empty when JAX recorded no source info.</span>
+<span class="sd">        phase: Which pass the equation belongs to — ``&quot;forward&quot;`` or</span>
+<span class="sd">            ``&quot;backward&quot;`` when set by :func:`find_grad_nan_source`, None</span>
+<span class="sd">            for plain forward scans (where it would be redundant). Note</span>
+<span class="sd">            that backward-pass equations carry the source location of the</span>
+<span class="sd">            *forward* line that generated them, so a backward site&#39;s call</span>
+<span class="sd">            stack points at e.g. the ``jnp.sqrt`` whose gradient NaN&#39;d.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">primitive</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">source</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">eqn_repr</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">input_stats</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">output_stats</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">inputs_had_nan</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">call_stack</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">phase</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render with color auto-detected from the environment.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the site as a multi-line report block.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            color: True forces ANSI colors, False forces plain text, None</span>
+<span class="sd">                (default) auto-detects via :func:`_color_enabled`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A block shaped like::</span>
+
+<span class="sd">                ✘ NaNs first produced by: div</span>
+<span class="sd">                │ call stack (most recent call last):</span>
+<span class="sd">                │       script.py:12 in main</span>
+<span class="sd">                │     ▶ script.py:5 in model</span>
+<span class="sd">                │ eqn: a:f32[2] = div b c</span>
+<span class="sd">                │ inputs:</span>
+<span class="sd">                │   [0] float32[2] range=[0, 0] nans=0 infs=0</span>
+<span class="sd">                ╰ outputs:</span>
+<span class="sd">                    [0] float32[2] range=[0, 0] nans=1 infs=0</span>
+
+<span class="sd">            with the ``▶`` marking the frame where the NaN was born.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">st</span> <span class="o">=</span> <span class="n">_Style</span><span class="p">(</span><span class="n">_color_enabled</span><span class="p">()</span> <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">color</span><span class="p">)</span>
+        <span class="n">kind</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;NaNs propagated from inputs of&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs_had_nan</span>
+            <span class="k">else</span> <span class="s2">&quot;NaNs first produced by&quot;</span>
+        <span class="p">)</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✘ </span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">: &quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">prim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">primitive</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="p">:</span>
+            <span class="n">head</span> <span class="o">+=</span> <span class="n">st</span><span class="o">.</span><span class="n">dim</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="si">}</span><span class="s2"> pass)&quot;</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">head</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_stack</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;│ &quot;</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">dim</span><span class="p">(</span><span class="s2">&quot;call stack (most recent call last):&quot;</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">call_stack</span><span class="p">):</span>
+                <span class="n">mark</span> <span class="o">=</span> <span class="s2">&quot;▶&quot;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">call_stack</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot; &quot;</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;│   </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">mark</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">mark</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;▶&#39;</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">mark</span><span class="si">}</span><span class="s2"> &quot;</span>
+                             <span class="o">+</span> <span class="n">_style_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">st</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;│ </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;▶&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="o">+</span> <span class="n">_style_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="n">st</span><span class="p">))</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;│ &quot;</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">dim</span><span class="p">(</span><span class="s2">&quot;eqn:&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">_one_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eqn_repr</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;│ &quot;</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">dim</span><span class="p">(</span><span class="s2">&quot;inputs:&quot;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_stats</span><span class="p">):</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;│   [</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">] &quot;</span> <span class="o">+</span> <span class="n">_style_stats</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">st</span><span class="p">))</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;╰ &quot;</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">dim</span><span class="p">(</span><span class="s2">&quot;outputs:&quot;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_stats</span><span class="p">):</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    [</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">] &quot;</span> <span class="o">+</span> <span class="n">_style_stats</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">st</span><span class="p">))</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+              </details>
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="jax_nan_debugger.NanSite.__str__" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">__str__</span>
+
+
+<a href="#jax_nan_debugger.NanSite.__str__" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">__str__</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Render with color auto-detected from the environment.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/jax_nan_debugger/report.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render with color auto-detected from the environment.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="jax_nan_debugger.NanSite.render" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">render</span>
+
+
+<a href="#jax_nan_debugger.NanSite.render" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">render</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Render the site as a multi-line report block.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>color</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True forces ANSI colors, False forces plain text, None
+(default) auto-detects via :func:<code>_color_enabled</code>.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A block shaped like::</p>
+<p>✘ NaNs first produced by: div
+│ call stack (most recent call last):
+│       script.py:12 in main
+│     ▶ script.py:5 in model
+│ eqn: a:f32[2] = div b c
+│ inputs:
+│   [0] float32[2] range=[0, 0] nans=0 infs=0
+╰ outputs:
+    [0] float32[2] range=[0, 0] nans=1 infs=0</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>with the <code>▶</code> marking the frame where the NaN was born.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/jax_nan_debugger/report.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
+<span class="normal">241</span>
+<span class="normal">242</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">color</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Render the site as a multi-line report block.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        color: True forces ANSI colors, False forces plain text, None</span>
+<span class="sd">            (default) auto-detects via :func:`_color_enabled`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A block shaped like::</span>
+
+<span class="sd">            ✘ NaNs first produced by: div</span>
+<span class="sd">            │ call stack (most recent call last):</span>
+<span class="sd">            │       script.py:12 in main</span>
+<span class="sd">            │     ▶ script.py:5 in model</span>
+<span class="sd">            │ eqn: a:f32[2] = div b c</span>
+<span class="sd">            │ inputs:</span>
+<span class="sd">            │   [0] float32[2] range=[0, 0] nans=0 infs=0</span>
+<span class="sd">            ╰ outputs:</span>
+<span class="sd">                [0] float32[2] range=[0, 0] nans=1 infs=0</span>
+
+<span class="sd">        with the ``▶`` marking the frame where the NaN was born.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">_Style</span><span class="p">(</span><span class="n">_color_enabled</span><span class="p">()</span> <span class="k">if</span> <span class="n">color</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">color</span><span class="p">)</span>
+    <span class="n">kind</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;NaNs propagated from inputs of&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs_had_nan</span>
+        <span class="k">else</span> <span class="s2">&quot;NaNs first produced by&quot;</span>
+    <span class="p">)</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✘ </span><span class="si">{</span><span class="n">kind</span><span class="si">}</span><span class="s2">: &quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">prim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">primitive</span><span class="p">)</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="p">:</span>
+        <span class="n">head</span> <span class="o">+=</span> <span class="n">st</span><span class="o">.</span><span class="n">dim</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">phase</span><span class="si">}</span><span class="s2"> pass)&quot;</span><span class="p">)</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">head</span><span class="p">]</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_stack</span><span class="p">:</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;│ &quot;</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">dim</span><span class="p">(</span><span class="s2">&quot;call stack (most recent call last):&quot;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">call_stack</span><span class="p">):</span>
+            <span class="n">mark</span> <span class="o">=</span> <span class="s2">&quot;▶&quot;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">call_stack</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot; &quot;</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;│   </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">mark</span><span class="p">)</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">mark</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">&#39;▶&#39;</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">mark</span><span class="si">}</span><span class="s2"> &quot;</span>
+                         <span class="o">+</span> <span class="n">_style_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">st</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;│ </span><span class="si">{</span><span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;▶&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2"> &quot;</span> <span class="o">+</span> <span class="n">_style_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="n">st</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;│ &quot;</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">dim</span><span class="p">(</span><span class="s2">&quot;eqn:&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">_one_line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eqn_repr</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;│ &quot;</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">dim</span><span class="p">(</span><span class="s2">&quot;inputs:&quot;</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_stats</span><span class="p">):</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;│   [</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">] &quot;</span> <span class="o">+</span> <span class="n">_style_stats</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">st</span><span class="p">))</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;╰ &quot;</span> <span class="o">+</span> <span class="n">st</span><span class="o">.</span><span class="n">dim</span><span class="p">(</span><span class="s2">&quot;outputs:&quot;</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_stats</span><span class="p">):</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    [</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">] &quot;</span> <span class="o">+</span> <span class="n">_style_stats</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">st</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "content.code.copy", "search.suggest"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
