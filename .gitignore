@@ -13,6 +13,9 @@ dist/
 # Test and tooling caches
 .pytest_cache/
 
+# Built documentation
+site/
+
 # Agentic AI assistants
 .claude/
 .cursor/

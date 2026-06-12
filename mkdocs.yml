@@ -1,0 +1,59 @@
+site_name: jax-nan-debugger
+site_description: Pinpoint the exact operation that first produces a NaN in a JAX computation
+site_url: https://pengjiaqiang86.github.io/JAX-NaNDebugger/
+repo_url: https://github.com/pengjiaqiang86/JAX-NaNDebugger
+repo_name: JAX-NaNDebugger
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - search.suggest
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - tables
+  - toc:
+      permalink: true
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_source: true
+            show_root_heading: true
+            members_order: source
+            separate_signature: true
+
+nav:
+  - Home: index.md
+  - Guide:
+      - Debugging forward runs: guide/forward.md
+      - Debugging gradients: guide/gradients.md
+      - Reading the report: guide/report.md
+      - Wrapping any transform: guide/transforms.md
+  - Examples: examples.md
+  - API reference: api.md
