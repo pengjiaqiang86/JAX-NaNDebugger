@@ -1,7 +1,28 @@
+# Python cache and bytecode
 __pycache__/
 *.py[cod]
+
+# Python packaging and build artifacts
 *.egg-info/
 build/
 dist/
+
+# Virtual environments
 .venv/
+
+# Test and tooling caches
 .pytest_cache/
+
+# Agentic AI assistants
+.claude/
+.cursor/
+.windsurf/
+.aider*
+.copilot/
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store

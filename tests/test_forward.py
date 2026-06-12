@@ -89,6 +89,33 @@ def test_nan_trace_decorator():
         f(jnp.array([-1.0]))
 
 
+def test_call_stack_shows_nested_helpers():
+    def helper(x):
+        return jnp.log(x)
+
+    def outer(x):
+        return helper(x - 2.0) + 1.0
+
+    report = find_nan_source(outer, jnp.array([1.0]))
+    stack = report.first_site.call_stack
+    # Outermost first, innermost (the log call) last.
+    assert stack[-2].endswith("outer")
+    assert stack[-1].endswith("helper")
+    assert all("jax_nan_debugger" not in frame for frame in stack)
+    assert "helper" in str(report)
+
+
+def test_render_color_toggle():
+    def f(x):
+        return jnp.log(x)
+
+    report = find_nan_source(f, jnp.array([-1.0]))
+    assert "\x1b[" in report.render(color=True)
+    assert "\x1b[" not in report.render(color=False)
+    # __str__ under pytest (no tty) must be plain so logs stay clean.
+    assert "\x1b[" not in str(report)
+
+
 def test_kwargs_supported():
     def f(x, shift=0.0):
         return jnp.log(x + shift)

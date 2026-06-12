@@ -29,13 +29,24 @@ def model(x):
 
 report = find_nan_source(model, jnp.array([1.0, 3.0]))
 print(report)
-# NaNs FIRST PRODUCED by: log
-#   at your_script.py:5 in model
-#   eqn: b:f32[2] = log a
-#   inputs:
-#     [0] float32[2] range=[-1, 1] nans=0 infs=0
-#   outputs:
+# ✘ NaNs first produced by: log
+# │ call stack (most recent call last):
+# │       your_script.py:12 in main
+# │     ▶ your_script.py:5 in model
+# │ eqn: b:f32[2] = log a
+# │ inputs:
+# │   [0] float32[2] range=[-1, 1] nans=0 infs=0
+# ╰ outputs:
 #     [0] float32[2] range=[0, 0] nans=1 infs=0
+
+The call stack is the full chain of *your* functions leading to the
+offending primitive (JAX internals are filtered out), so when the same
+helper is called from many places you can see which call path produced
+the NaN. On a terminal the report is colorized — the origin frame, the
+primitive, and any non-zero `nans=`/`infs=` counts are highlighted.
+Color is disabled automatically when output is piped, or explicitly via
+the `NO_COLOR` env var (`FORCE_COLOR` forces it on); `report.render(color=...)`
+gives explicit control.
 ```
 
 ### Decorator (zero-cost until a NaN appears)
@@ -69,6 +80,7 @@ Each script in [examples/](examples/) is a self-contained NaN scenario:
 | `05_nan_hidden_inside_jit.py` | NaN inside `@jax.jit`, located at its source line (also exercises `jnp.std`'s intentional internal NaN literal, which is correctly *not* blamed) |
 | `06_nan_trace_in_data_loop.py` | `@nan_trace` guarding a loop over batches at full speed |
 | `07_nan_already_in_inputs.py` | NaN already present in the data, reported as such |
+| `08_call_stack_of_nan_origin.py` | NaN deep in nested helpers — the report shows the full call chain (`transformer_block` → `attention` → `softmax_weights`) |
 
 Run them from the repo root after `pip install -e .`:
 
